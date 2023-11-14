@@ -1,0 +1,18 @@
+server:
+  port: 8081
+spring:
+  sql:
+    init:
+      mode: never
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/hrm_app
+    username: hrm_app_user
+    password: hrm_user_password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
