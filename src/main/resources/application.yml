@@ -3,7 +3,7 @@ server:
 spring:
   sql:
     init:
-      mode: never
+      mode: always
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/hrm_app
