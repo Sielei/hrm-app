@@ -1,6 +1,20 @@
 server:
   port: 8081
 spring:
+  mail:
+    default-encoding: utf-8
+    host: smtp.gmail.com
+    port: 587
+    username: ''
+    password: ''
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          debug: true
   sql:
     init:
       mode: always
