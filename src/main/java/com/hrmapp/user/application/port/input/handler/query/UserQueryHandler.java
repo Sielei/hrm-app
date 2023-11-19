@@ -6,6 +6,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Component
 @Transactional(readOnly = true)
 public class UserQueryHandler {
@@ -20,5 +22,19 @@ public class UserQueryHandler {
                 .map(UserDto::fromEntity)
                 .orElseThrow(() -> new UsernameNotFoundException("User with username: " +
                         username + " does not exist!"));
+    }
+
+    public UserDto findByEmailAddress(String email) {
+        return userRepository.findByEmailAddress(email)
+                .map(UserDto::fromEntity)
+                .orElseThrow(() -> new UsernameNotFoundException("User with email: " +
+                        email + " does not exist!"));
+    }
+
+    public UserDto findById(UUID userId) {
+        return userRepository.findById(userId)
+                .map(UserDto::fromEntity)
+                .orElseThrow(() -> new UsernameNotFoundException("User with id: " +
+                        userId + " does not exist!"));
     }
 }
