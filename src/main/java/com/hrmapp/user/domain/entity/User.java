@@ -194,4 +194,19 @@ public class User extends BaseEntity<UserId> {
             return new User(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "employeeId=" + employeeId +
+                ", username='" + username + '\'' +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
+                ", status=" + status +
+                ", createdBy=" + createdBy +
+                ", passwordPolicyId=" + passwordPolicyId +
+                ", changePasswordNextLogin=" + changePasswordNextLogin +
+                '}';
+    }
 }
