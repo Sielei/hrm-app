@@ -3,7 +3,7 @@ INSERT INTO password_policies (id, name, number_of_characters, number_of_lowerca
 
 INSERT INTO users(id,username, change_password_next_login, created_by, email_address, password, status,
                   password_policy) VALUES
-    ('cc5ea78d-61a8-4f34-8ac4-a50e92ef8ad3', 'JUN001', 'FALSE', 'cc5ea78d-61a8-4f34-8ac4-a50e92ef8ad3', 'systemadmin@hrm-app.com',
+    ('cc5ea78d-61a8-4f34-8ac4-a50e92ef8ad3', 'JUN001', 'FALSE', 'cc5ea78d-61a8-4f34-8ac4-a50e92ef8ad3', 'hsielei@gmail.com',
      '$2a$12$/TLPiW4HijPHXOzE4xTIu.I3i6ZqNRKY28QM4SoJV8mqj4mS4ocIi', 'ACTIVE', '2bfddc8d-4a25-4fc8-a2b7-5ea9caadad23'),
     ('47c9842a-d9bf-49be-b887-b07eddd095ab', 'DeactivatedUser', 'FALSE', 'cc5ea78d-61a8-4f34-8ac4-a50e92ef8ad3', 'systemadmin@hrm-app.com',
      '$2a$12$XzyJ0r7YgiaPoFi6ftKAIORm99hwj/Cwr//IU6hJ5Wl.es/La1WlG', 'DEACTIVATED', '2bfddc8d-4a25-4fc8-a2b7-5ea9caadad23'),
@@ -37,3 +37,6 @@ INSERT INTO role_permissions VALUES
 ('fc3ae74e-927e-42cb-84f8-6d791c1ad870', '9b034ee3-12ee-495f-837d-ffce6f70e226'),
 ('fc3ae74e-927e-42cb-84f8-6d791c1ad870', 'cc522ec5-7449-4d6f-a16a-c30aa33879cc'),
 ('fc3ae74e-927e-42cb-84f8-6d791c1ad870', '5882605b-92c2-4db9-bcfb-d7c1daeb9b6a');
+
+INSERT INTO password_resets (id, user_id, token, expiry) VALUES
+('2df4c286-f5b2-4b83-900d-cf41f593f40a', 'cc5ea78d-61a8-4f34-8ac4-a50e92ef8ad3', 'bee31bae-4c4d-4f36-a8a4-e5dcbd62cb4e', current_timestamp + interval '2 HOURS');
