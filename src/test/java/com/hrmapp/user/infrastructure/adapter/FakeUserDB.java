@@ -49,4 +49,31 @@ public class FakeUserDB implements UserRepository {
         return users.stream().filter(user -> user.getUsername().equals(username))
                 .findFirst();
     }
+
+    @Override
+    public Optional<User> findByEmailAddress(String email) {
+        return users.stream().filter(user -> user.getEmailAddress().equals(email))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<User> findById(UUID userId) {
+        return users.stream().filter(user -> user.getId().getValue().equals(userId))
+                .findFirst();
+    }
+
+    @Override
+    public User save(User user) {
+        var existingUser = users.stream()
+                .filter(u -> u.getId().equals(user.getId()))
+                .findFirst();
+        if (existingUser.isEmpty()){
+            users.add(user);
+        }
+        else {
+            var index = users.indexOf(existingUser.get());
+            users.set(index, user);
+        }
+        return user;
+    }
 }
