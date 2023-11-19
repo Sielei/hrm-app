@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public record UserDto(UUID id, String username, String password, UserStatus userStatus,
-                      Set<Role> roles) {
+                      Set<Role> roles, UUID passwordPolicyId) {
     public static Builder builder() {
         return new Builder();
     }
@@ -20,6 +20,7 @@ public record UserDto(UUID id, String username, String password, UserStatus user
                 .password(user.getPassword())
                 .userStatus(user.getStatus())
                 .roles(user.getRoles())
+                .passwordPolicyId(user.getPasswordPolicyId().getValue())
                 .build();
     }
 
@@ -29,6 +30,7 @@ public record UserDto(UUID id, String username, String password, UserStatus user
         private String password;
         private UserStatus userStatus;
         private Set<Role> roles;
+        private UUID passwordPolicyId;
 
         private Builder() {
         }
@@ -57,9 +59,13 @@ public record UserDto(UUID id, String username, String password, UserStatus user
             roles = val;
             return this;
         }
+        public Builder passwordPolicyId(UUID val){
+            passwordPolicyId = val;
+            return this;
+        }
 
         public UserDto build() {
-            return new UserDto(id, username, password, userStatus, roles);
+            return new UserDto(id, username, password, userStatus, roles, passwordPolicyId);
         }
     }
 }
