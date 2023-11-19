@@ -39,7 +39,7 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/api/*").authenticated();
-                    authorizationManagerRequestMatcherRegistry.requestMatchers("/*","/*/*","/api/auth/login","/api/auth/reset-password", "/api/auth/get-reset-password-token", "/index*", "/assets/*", "/logo*",
+                    authorizationManagerRequestMatcherRegistry.requestMatchers("/*","/*/*","/api/auth/login","/api/auth/reset-password", "/api/auth/get-password-reset-token", "/index*", "/assets/*", "/logo*",
                             "/swagger-ui/*", "/v3/api-docs/swagger-config", "/v3/api-docs").permitAll()
                             .anyRequest().authenticated();
                 })
