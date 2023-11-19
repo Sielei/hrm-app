@@ -81,3 +81,15 @@ CREATE TABLE IF NOT EXISTS public.sessions(
     user_id uuid,
     CONSTRAINT sessions_pkey PRIMARY KEY (id)
 );
+CREATE TABLE IF NOT EXISTS public.password_resets(
+    id character varying(36) COLLATE pg_catalog."default" NOT NULL,
+    expiry timestamp(6) without time zone,
+    token character varying(255) COLLATE pg_catalog."default",
+    user_id uuid NOT NULL,
+    CONSTRAINT password_resets_pkey PRIMARY KEY (id),
+--     CONSTRAINT uk_8d1ij9fsn1mea1l3702owb7w3 UNIQUE (user_id),
+    CONSTRAINT fkfy4ulhbvy3yguwnqqvts2iqqx FOREIGN KEY (user_id)
+        REFERENCES public.users (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
