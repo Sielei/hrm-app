@@ -89,6 +89,40 @@ class AuthControllerTest {
     }
 
     @Test
-    void shouldSendPasswordResetToken(){}
+    void shouldSendPasswordResetToken(){
+        given().contentType(ContentType.JSON)
+                .body(
+                        """
+                                {
+                                    "emailAddress": "hsielei@gmail.com"
+                                }
+                            """
+                )
+                .when()
+                .post("/api/auth/get-password-reset-token")
+                .then()
+                .statusCode(200)
+                .body("success", equalTo(true))
+                .body("message", equalTo("A password reset link has been sent to hsielei@gmail.com" ));
+    }
+
+    @Test
+    void shouldResetPasswordGivenValidResetTokenAndValidNewPassword(){
+        given().contentType(ContentType.JSON)
+                .body(
+                        """
+                                {
+                                    "token": "bee31bae-4c4d-4f36-a8a4-e5dcbd62cb4e",
+                                    "newPassword": "P@5sW0rd"
+                                }
+                            """
+                )
+                .when()
+                .post("/api/auth/reset-password")
+                .then()
+                .statusCode(200)
+                .body("success", equalTo(true))
+                .body("message", equalTo("Password reset successfully! Proceed to login page to login with your new password!" ));
+    }
 
 }
