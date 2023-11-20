@@ -7,7 +7,7 @@ import com.hrmapp.user.domain.valueobject.UserStatus;
 import java.util.Set;
 import java.util.UUID;
 
-public record UserDto(UUID id, String username, String password, UserStatus userStatus,
+public record UserDto(UUID id, UUID employeeId, String username, String emailAddress, String password, UserStatus userStatus,
                       Set<Role> roles, UUID passwordPolicyId) {
     public static Builder builder() {
         return new Builder();
@@ -16,7 +16,9 @@ public record UserDto(UUID id, String username, String password, UserStatus user
     public static UserDto fromEntity(User user) {
         return UserDto.builder()
                 .id(user.getId().getValue())
+                .employeeId(user.getEmployeeId().getValue())
                 .username(user.getUsername())
+                .emailAddress(user.getEmailAddress())
                 .password(user.getPassword())
                 .userStatus(user.getStatus())
                 .roles(user.getRoles())
@@ -26,7 +28,9 @@ public record UserDto(UUID id, String username, String password, UserStatus user
 
     public static final class Builder {
         private UUID id;
+        private UUID employeeId;
         private String username;
+        private String emailAddress;
         private String password;
         private UserStatus userStatus;
         private Set<Role> roles;
@@ -40,8 +44,18 @@ public record UserDto(UUID id, String username, String password, UserStatus user
             return this;
         }
 
+        public Builder employeeId(UUID val){
+            employeeId = val;
+            return this;
+        }
+
         public Builder username(String val) {
             username = val;
+            return this;
+        }
+
+        public Builder emailAddress(String val){
+            emailAddress = val;
             return this;
         }
 
@@ -65,7 +79,7 @@ public record UserDto(UUID id, String username, String password, UserStatus user
         }
 
         public UserDto build() {
-            return new UserDto(id, username, password, userStatus, roles, passwordPolicyId);
+            return new UserDto(id, employeeId, username, emailAddress, password, userStatus, roles, passwordPolicyId);
         }
     }
 }
