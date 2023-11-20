@@ -41,4 +41,8 @@ public class UserDomainService {
     public void removeRoles(User user, Set<Role> roles) {
         user.removeRoles(roles);
     }
+
+    public void deactivateUser(User user) {
+        user.deactivateUser();
+    }
 }

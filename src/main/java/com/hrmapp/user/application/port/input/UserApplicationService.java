@@ -2,18 +2,23 @@ package com.hrmapp.user.application.port.input;
 
 import com.hrmapp.common.application.dto.UserDto;
 import com.hrmapp.common.application.port.input.util.PasswordUtil;
+import com.hrmapp.user.application.dto.PageQuery;
+import com.hrmapp.user.application.dto.PagedResult;
 import com.hrmapp.user.application.dto.PasswordPolicyDto;
 import com.hrmapp.user.application.dto.UserRole;
 import com.hrmapp.user.application.dto.command.CreatePasswordResetTokenCommand;
 import com.hrmapp.user.application.dto.command.CreateUserCommand;
 import com.hrmapp.user.application.dto.request.CreateUserRequest;
 import com.hrmapp.user.application.dto.command.UpdatePasswordCommand;
+import com.hrmapp.user.application.dto.request.DeactivateUserRequest;
+import com.hrmapp.user.application.dto.request.UpdatePasswordRequest;
 import com.hrmapp.user.application.dto.request.UpdateUserRequest;
 import com.hrmapp.user.application.dto.response.CreatePasswordResetTokenResponse;
 import com.hrmapp.user.application.dto.response.CreateUserResponse;
 import com.hrmapp.user.application.port.input.handler.command.*;
 import com.hrmapp.user.application.port.input.handler.query.*;
 import com.hrmapp.user.domain.entity.Session;
+import com.hrmapp.user.domain.exception.UserDomainException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -125,5 +130,31 @@ public class UserApplicationService {
 
     public CreateUserResponse handleRemoveRoles(UUID userId, List<UserRole> userRoles) {
         return userCommandHandler.handleRemoveRoles(userId, userRoles);
+    }
+
+    public CreateUserResponse findUserByUserId(UUID userId) {
+        return CreateUserResponse.fromDto(findUserById(userId));
+    }
+
+    public CreateUserResponse handleDeactivateUserRequest(UUID deactivatedBy, DeactivateUserRequest deactivateUserRequest) {
+        return userCommandHandler.handleDeactivateUserRequest(deactivatedBy, deactivateUserRequest);
+    }
+
+    public PagedResult<CreateUserResponse> findAllUsers(PageQuery pageQuery) {
+        return userQueryHandler.findAllUsers(pageQuery);
+    }
+
+    public void handleUpdatePasswordRequest(UUID userId, UpdatePasswordRequest updatePasswordRequest) {
+        var user = findUserById(userId);
+        if (!bCryptPasswordEncoder.matches(updatePasswordRequest.currentPassword(), user.password())){
+            throw new UserDomainException("Current password does not match with the password you provided!");
+        }
+        passwordUtil.validatePassword(user, updatePasswordRequest.newPassword());
+        var newPassword = bCryptPasswordEncoder.encode(updatePasswordRequest.newPassword());
+        var updatePasswordCommand = UpdatePasswordCommand.builder()
+                .userId(userId)
+                .newPassword(newPassword)
+                .build();
+        handleUpdatePasswordCommand(updatePasswordCommand);
     }
 }
