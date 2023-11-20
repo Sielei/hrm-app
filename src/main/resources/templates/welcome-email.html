@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title th:remove="all">Welcome to HRM-APP</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<p>
+    Hello <span th:text="${name}"></span>,
+</p>
+<p>
+    An account has been created for you in <b>HRM-APP</b> system with the following credentials:<br>
+    <b>username: </b><span th:text="${username}"></span><br>
+    <b>password: </b><span th:text="${password}"></span>
+</p>
+<p>
+    Regards, <br/>
+    <em>HRM-APP team</em>
+</p>
+</body>
+</html>
