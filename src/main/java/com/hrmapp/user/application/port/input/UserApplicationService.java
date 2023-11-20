@@ -1,15 +1,23 @@
 package com.hrmapp.user.application.port.input;
 
 import com.hrmapp.common.application.dto.UserDto;
+import com.hrmapp.common.application.port.input.util.PasswordUtil;
 import com.hrmapp.user.application.dto.PasswordPolicyDto;
+import com.hrmapp.user.application.dto.UserRole;
 import com.hrmapp.user.application.dto.command.CreatePasswordResetTokenCommand;
+import com.hrmapp.user.application.dto.command.CreateUserCommand;
+import com.hrmapp.user.application.dto.request.CreateUserRequest;
 import com.hrmapp.user.application.dto.command.UpdatePasswordCommand;
+import com.hrmapp.user.application.dto.request.UpdateUserRequest;
 import com.hrmapp.user.application.dto.response.CreatePasswordResetTokenResponse;
+import com.hrmapp.user.application.dto.response.CreateUserResponse;
 import com.hrmapp.user.application.port.input.handler.command.*;
 import com.hrmapp.user.application.port.input.handler.query.*;
 import com.hrmapp.user.domain.entity.Session;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -26,12 +34,15 @@ public class UserApplicationService {
     private final PermissionQueryHandler permissionQueryHandler;
     private final SessionCommandHandler sessionCommandHandler;
     private final SessionQueryHandler sessionQueryHandler;
+    private final PasswordUtil passwordUtil;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserEmailHandler userEmailHandler;
 
     public UserApplicationService(UserCommandHandler userCommandHandler, UserQueryHandler userQueryHandler,
                                   PasswordResetCommandHandler passwordResetCommandHandler, PasswordResetQueryHandler passwordResetQueryHandler, RoleCommandHandler roleCommandHandler, RoleQueryHandler roleQueryHandler,
                                   PasswordPolicyCommandHandler passwordPolicyCommandHandler, PasswordPolicyQueryHandler passwordPolicyQueryHandler,
                                   PermissionCommandHandler permissionCommandHandler, PermissionQueryHandler permissionQueryHandler,
-                                  SessionCommandHandler sessionCommandHandler, SessionQueryHandler sessionQueryHandler) {
+                                  SessionCommandHandler sessionCommandHandler, SessionQueryHandler sessionQueryHandler, PasswordUtil passwordUtil, BCryptPasswordEncoder bCryptPasswordEncoder, UserEmailHandler userEmailHandler) {
         this.userCommandHandler = userCommandHandler;
         this.userQueryHandler = userQueryHandler;
         this.passwordResetCommandHandler = passwordResetCommandHandler;
@@ -44,6 +55,9 @@ public class UserApplicationService {
         this.permissionQueryHandler = permissionQueryHandler;
         this.sessionCommandHandler = sessionCommandHandler;
         this.sessionQueryHandler = sessionQueryHandler;
+        this.passwordUtil = passwordUtil;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.userEmailHandler = userEmailHandler;
     }
     public UserDto findUserById(UUID userId) {
         return userQueryHandler.findById(userId);
@@ -85,5 +99,31 @@ public class UserApplicationService {
     public Session terminateSession(UUID sessionId) {
         var session = sessionQueryHandler.findSessionById(sessionId);
         return sessionCommandHandler.terminateSession(session);
+    }
+
+
+    public String generateNewUserPassword(UUID passwordPolicyId) {
+        return passwordUtil.generateNewUserPassword(passwordPolicyId);
+    }
+
+    public CreateUserResponse handleCreateUserCommand(CreateUserRequest createUserRequest, UUID createdBy) {
+        var generatedPassword = generateNewUserPassword(createUserRequest.passwordPolicyId());
+        var password = bCryptPasswordEncoder.encode(generatedPassword);
+        var createUserCommand = CreateUserCommand.builder().build();
+        var userDto = userCommandHandler.handleCreateUserCommand(createUserCommand);
+        userEmailHandler.sendWelcomeEmail(userDto, generatedPassword);
+        return CreateUserResponse.fromDto(userDto);
+    }
+
+    public CreateUserResponse handleUpdateUserRequest(UUID userId, UpdateUserRequest updateUserRequest) {
+        return userCommandHandler.handleUpdateUserRequest(userId, updateUserRequest);
+    }
+
+    public CreateUserResponse handleAssignRoles(UUID userId, List<UserRole> userRoles) {
+        return userCommandHandler.handleAssignRoles(userId, userRoles);
+    }
+
+    public CreateUserResponse handleRemoveRoles(UUID userId, List<UserRole> userRoles) {
+        return userCommandHandler.handleRemoveRoles(userId, userRoles);
     }
 }
