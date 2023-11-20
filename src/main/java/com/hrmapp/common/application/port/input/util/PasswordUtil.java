@@ -6,6 +6,10 @@ import com.hrmapp.user.domain.exception.UserDomainException;
 import org.passay.*;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
 @Component
 public class PasswordUtil {
     private final PasswordPolicyQueryHandler passwordPolicyQueryHandler;
@@ -27,5 +31,16 @@ public class PasswordUtil {
         if (!result.isValid()){
             throw new UserDomainException(passwordValidator.getMessages(result).get(0));
         }
+    }
+    public String generateNewUserPassword(UUID passwordPolicyId) {
+        var passwordPolicy = passwordPolicyQueryHandler.findPasswordPolicyById(passwordPolicyId);
+        List<CharacterRule> passwordRules = Arrays.asList(
+                new CharacterRule(EnglishCharacterData.Special, passwordPolicy.numberOfSpecialCharacters()),
+                new CharacterRule(EnglishCharacterData.Digit, passwordPolicy.numberOfNumericCharacters()),
+                new CharacterRule(EnglishCharacterData.LowerCase, passwordPolicy.numberOfLowercaseCharacters()),
+                new CharacterRule(EnglishCharacterData.UpperCase, passwordPolicy.numberOfUppercaseCharacters())
+        );
+        var passwordGenerator = new PasswordGenerator();
+        return passwordGenerator.generatePassword(passwordPolicy.numberOfCharacters(), passwordRules);
     }
 }
