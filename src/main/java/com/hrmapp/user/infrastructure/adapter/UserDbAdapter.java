@@ -1,9 +1,13 @@
 package com.hrmapp.user.infrastructure.adapter;
 
+import com.hrmapp.common.application.dto.UserDto;
+import com.hrmapp.user.application.dto.response.CreateUserResponse;
 import com.hrmapp.user.application.port.output.UserRepository;
 import com.hrmapp.user.domain.entity.User;
 import com.hrmapp.user.infrastructure.UserDataMapper;
 import com.hrmapp.user.infrastructure.data.UserJpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -40,5 +44,12 @@ public class UserDbAdapter implements UserRepository {
         var userEntity = userDataMapper.mapUserToUserJpaEntity(user);
         var persistedUser = userJpaRepository.save(userEntity);
         return userDataMapper.mapUserJpaEntityToUser(persistedUser);
+    }
+
+    @Override
+    public Page<CreateUserResponse> findUsers(PageRequest pageable) {
+        return userJpaRepository.findAll(pageable)
+                .map(userEntity -> CreateUserResponse.fromDto(UserDto.fromEntity(
+                        userDataMapper.mapUserJpaEntityToUser(userEntity))));
     }
 }
