@@ -1,7 +1,11 @@
 package com.hrmapp.user.application.port.input.handler.query;
 
 import com.hrmapp.common.application.dto.UserDto;
+import com.hrmapp.user.application.dto.PageQuery;
+import com.hrmapp.user.application.dto.PagedResult;
+import com.hrmapp.user.application.dto.response.CreateUserResponse;
 import com.hrmapp.user.application.port.output.UserRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,5 +40,21 @@ public class UserQueryHandler {
                 .map(UserDto::fromEntity)
                 .orElseThrow(() -> new UsernameNotFoundException("User with id: " +
                         userId + " does not exist!"));
+    }
+
+    public PagedResult<CreateUserResponse> findAllUsers(PageQuery pageQuery) {
+        var pageNo = pageQuery.pageNo() > 0 ? pageQuery.pageNo() - 1 : 0;
+        var pageable = PageRequest.of(pageNo, pageQuery.pageSize());
+        var page = userRepository.findUsers(pageable);
+        return new PagedResult<>(
+                page.getContent(),
+                page.getTotalElements(),
+                page.getNumber() + 1,
+                page.getTotalPages(),
+                page.isFirst(),
+                page.isLast(),
+                page.hasNext(),
+                page.hasPrevious()
+        );
     }
 }
