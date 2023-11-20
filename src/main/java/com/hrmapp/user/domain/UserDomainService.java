@@ -1,8 +1,11 @@
 package com.hrmapp.user.domain;
 
 import com.hrmapp.user.domain.entity.PasswordReset;
+import com.hrmapp.user.domain.entity.Role;
 import com.hrmapp.user.domain.entity.Session;
 import com.hrmapp.user.domain.entity.User;
+
+import java.util.Set;
 
 public class UserDomainService {
     public void createPasswordReset(PasswordReset passwordReset) {
@@ -21,5 +24,21 @@ public class UserDomainService {
     public Session terminateSession(Session session) {
         session.terminateSession();
         return session;
+    }
+
+    public void createUser(User user) {
+        user.createUser();
+    }
+
+    public void updateUser(User user, String username, String emailAddress) {
+        user.updateUser(username, emailAddress);
+    }
+
+    public void assignRoles(User user, Set<Role> roles) {
+        user.assignRoles(roles);
+    }
+
+    public void removeRoles(User user, Set<Role> roles) {
+        user.removeRoles(roles);
     }
 }
