@@ -4,6 +4,7 @@ import com.hrmapp.common.application.dto.UserDto;
 import com.hrmapp.user.application.dto.UserRole;
 import com.hrmapp.user.application.dto.command.CreateUserCommand;
 import com.hrmapp.user.application.dto.command.UpdatePasswordCommand;
+import com.hrmapp.user.application.dto.request.DeactivateUserRequest;
 import com.hrmapp.user.application.dto.request.UpdateUserRequest;
 import com.hrmapp.user.application.dto.response.CreateUserResponse;
 import com.hrmapp.user.application.port.output.RoleRepository;
@@ -83,5 +84,16 @@ public class UserCommandHandler {
         userDomainService.removeRoles(user, rolesToRemove);
         var updatedUser = userRepository.save(user);
         return CreateUserResponse.fromDto(UserDto.fromEntity(updatedUser));
+    }
+
+    public CreateUserResponse handleDeactivateUserRequest(UUID deactivatedBy, DeactivateUserRequest deactivateUserRequest) {
+        var user = findUserById(deactivateUserRequest.userId());
+        userDomainService.deactivateUser(user);
+        var updatedUser = userRepository.save(user);
+        createDeactivationRecord(updatedUser, deactivatedBy);
+        return CreateUserResponse.fromDto(UserDto.fromEntity(updatedUser));
+    }
+
+    private void createDeactivationRecord(User updatedUser, UUID deactivatedBy) {
     }
 }
