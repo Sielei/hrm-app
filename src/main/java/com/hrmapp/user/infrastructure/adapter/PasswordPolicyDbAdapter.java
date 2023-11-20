@@ -24,4 +24,11 @@ public class PasswordPolicyDbAdapter implements PasswordPolicyRepository {
         return passwordPolicyJpaRepository.findById(passwordPolicyId)
                 .map(userDataMapper::mapPasswordPolicyJpaEntityToPasswordPolicy);
     }
+
+    @Override
+    public PasswordPolicy save(PasswordPolicy passwordPolicy) {
+        var passwordPolicyEntity = userDataMapper.mapPasswordPolicyToPasswordPolicyJpaEntity(passwordPolicy);
+        var newPasswordPolicy = passwordPolicyJpaRepository.save(passwordPolicyEntity);
+        return userDataMapper.mapPasswordPolicyJpaEntityToPasswordPolicy(newPasswordPolicy);
+    }
 }

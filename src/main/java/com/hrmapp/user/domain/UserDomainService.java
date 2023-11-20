@@ -1,9 +1,6 @@
 package com.hrmapp.user.domain;
 
-import com.hrmapp.user.domain.entity.PasswordReset;
-import com.hrmapp.user.domain.entity.Role;
-import com.hrmapp.user.domain.entity.Session;
-import com.hrmapp.user.domain.entity.User;
+import com.hrmapp.user.domain.entity.*;
 
 import java.util.Set;
 
@@ -44,5 +41,9 @@ public class UserDomainService {
 
     public void deactivateUser(User user) {
         user.deactivateUser();
+    }
+
+    public void createPasswordPolicy(PasswordPolicy passwordPolicy) {
+        passwordPolicy.createPolicy();
     }
 }

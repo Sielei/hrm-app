@@ -8,11 +8,8 @@ import com.hrmapp.user.application.dto.PasswordPolicyDto;
 import com.hrmapp.user.application.dto.UserRole;
 import com.hrmapp.user.application.dto.command.CreatePasswordResetTokenCommand;
 import com.hrmapp.user.application.dto.command.CreateUserCommand;
-import com.hrmapp.user.application.dto.request.CreateUserRequest;
+import com.hrmapp.user.application.dto.request.*;
 import com.hrmapp.user.application.dto.command.UpdatePasswordCommand;
-import com.hrmapp.user.application.dto.request.DeactivateUserRequest;
-import com.hrmapp.user.application.dto.request.UpdatePasswordRequest;
-import com.hrmapp.user.application.dto.request.UpdateUserRequest;
 import com.hrmapp.user.application.dto.response.CreatePasswordResetTokenResponse;
 import com.hrmapp.user.application.dto.response.CreateUserResponse;
 import com.hrmapp.user.application.port.input.handler.command.*;
@@ -156,5 +153,9 @@ public class UserApplicationService {
                 .newPassword(newPassword)
                 .build();
         handleUpdatePasswordCommand(updatePasswordCommand);
+    }
+
+    public CreatePasswordPolicyResponse handleCreatePasswordPolicy(CreatePasswordPolicyRequest createPasswordPolicyRequest) {
+        return passwordPolicyCommandHandler.handleCreatePasswordPolicy(createPasswordPolicyRequest);
     }
 }

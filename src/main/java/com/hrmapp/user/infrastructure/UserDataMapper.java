@@ -165,4 +165,17 @@ public class UserDataMapper {
                 .terminatedAt(sessionEntity.getTerminatedAt())
                 .build();
     }
+
+    public PasswordPolicyEntity mapPasswordPolicyToPasswordPolicyJpaEntity(PasswordPolicy passwordPolicy) {
+        return PasswordPolicyEntity.builder()
+                .id(passwordPolicy.getId().getValue())
+                .name(passwordPolicy.getName())
+                .passwordResetDays(passwordPolicy.getPasswordResetDays())
+                .numberOfCharacters(passwordPolicy.getNumberOfCharacters())
+                .numberOfSpecialCharacters(passwordPolicy.getNumberOfSpecialCharacters())
+                .numberOfLowercaseCharacters(passwordPolicy.getNumberOfLowercaseCharacters())
+                .numberOfNumericCharacters(passwordPolicy.getNumberOfNumericCharacters())
+                .numberOfUppercaseCharacters(passwordPolicy.getNumberOfUppercaseCharacters())
+                .build();
+    }
 }

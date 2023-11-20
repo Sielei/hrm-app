@@ -7,4 +7,6 @@ import java.util.UUID;
 
 public interface PasswordPolicyRepository {
     Optional<PasswordPolicy> findById(UUID passwordPolicyId);
+
+    PasswordPolicy save(PasswordPolicy passwordPolicy);
 }
