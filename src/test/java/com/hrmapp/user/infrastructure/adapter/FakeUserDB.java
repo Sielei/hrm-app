@@ -1,8 +1,11 @@
 package com.hrmapp.user.infrastructure.adapter;
 
+import com.hrmapp.user.application.dto.response.CreateUserResponse;
 import com.hrmapp.user.application.port.output.UserRepository;
 import com.hrmapp.user.domain.entity.User;
 import com.hrmapp.user.domain.valueobject.UserStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,5 +78,10 @@ public class FakeUserDB implements UserRepository {
             users.set(index, user);
         }
         return user;
+    }
+
+    @Override
+    public Page<CreateUserResponse> findUsers(PageRequest pageable) {
+        return null;
     }
 }

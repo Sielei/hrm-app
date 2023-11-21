@@ -1,7 +1,10 @@
 package com.hrmapp.user.infrastructure.adapter;
 
+import com.hrmapp.user.application.dto.PasswordPolicyDto;
 import com.hrmapp.user.application.port.output.PasswordPolicyRepository;
 import com.hrmapp.user.domain.entity.PasswordPolicy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,5 +51,19 @@ public class FakePasswordPolicyDB implements PasswordPolicyRepository {
     public Optional<PasswordPolicy> findById(UUID passwordPolicyId) {
         return passwordPolicies.stream().filter(policy -> policy.getId().getValue().equals(passwordPolicyId))
                 .findFirst();
+    }
+
+    @Override
+    public PasswordPolicy save(PasswordPolicy passwordPolicy) {
+        return null;
+    }
+
+    @Override
+    public Page<PasswordPolicyDto> findPasswordPolicies(PageRequest pageable) {
+        return null;
+    }
+
+    @Override
+    public void delete(PasswordPolicy passwordPolicy) {
     }
 }
