@@ -158,4 +158,16 @@ public class UserApplicationService {
     public CreatePasswordPolicyResponse handleCreatePasswordPolicy(CreatePasswordPolicyRequest createPasswordPolicyRequest) {
         return passwordPolicyCommandHandler.handleCreatePasswordPolicy(createPasswordPolicyRequest);
     }
+
+    public PagedResult<PasswordPolicyDto> findAllPasswordPolicies(PageQuery pageQuery) {
+        return passwordPolicyQueryHandler.findAllPasswordPolicies(pageQuery);
+    }
+
+    public PasswordPolicyDto handleUpdatePasswordPolicyRequest(UUID passwordPolicyId, UpdatePasswordPolicyRequest updatePasswordPolicyRequest) {
+        return passwordPolicyCommandHandler.handleUpdatePasswordPolicyRequest(passwordPolicyId, updatePasswordPolicyRequest);
+    }
+
+    public void handleDeletePasswordPolicy(UUID passwordPolicyId) {
+        passwordPolicyCommandHandler.handleDeletePasswordPolicy(passwordPolicyId);
+    }
 }
