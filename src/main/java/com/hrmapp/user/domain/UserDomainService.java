@@ -1,5 +1,6 @@
 package com.hrmapp.user.domain;
 
+import com.hrmapp.user.application.dto.request.UpdatePasswordPolicyRequest;
 import com.hrmapp.user.domain.entity.*;
 
 import java.util.Set;
@@ -45,5 +46,12 @@ public class UserDomainService {
 
     public void createPasswordPolicy(PasswordPolicy passwordPolicy) {
         passwordPolicy.createPolicy();
+    }
+
+    public void updatePasswordPolicy(PasswordPolicy passwordPolicy, String name, int passwordResetDays,
+                                     int numberOfCharacters, int numberOfSpecialCharacters, int numberOfNumericCharacters,
+                                     int numberOfLowercaseCharacters, int numberOfUppercaseCharacters) {
+        passwordPolicy.updatePolicy(name, passwordResetDays, numberOfCharacters, numberOfSpecialCharacters,
+                numberOfNumericCharacters, numberOfLowercaseCharacters, numberOfUppercaseCharacters);
     }
 }
