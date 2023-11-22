@@ -178,4 +178,14 @@ public class UserDataMapper {
                 .numberOfUppercaseCharacters(passwordPolicy.getNumberOfUppercaseCharacters())
                 .build();
     }
+
+    public RoleEntity mapRoleToRoleJpaEntity(Role role) {
+        return RoleEntity.builder()
+                .id(role.getId().getValue())
+                .name(role.getName())
+                .description(role.getDescription())
+                .permissions(mapPermissionsToPermissionJpaEntities(role.getPermissions()))
+                .createdBy(role.getCreatedBy().getValue())
+                .build();
+    }
 }
