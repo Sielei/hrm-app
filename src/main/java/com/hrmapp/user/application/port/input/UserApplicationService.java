@@ -2,10 +2,7 @@ package com.hrmapp.user.application.port.input;
 
 import com.hrmapp.common.application.dto.UserDto;
 import com.hrmapp.common.application.port.input.util.PasswordUtil;
-import com.hrmapp.user.application.dto.PageQuery;
-import com.hrmapp.user.application.dto.PagedResult;
-import com.hrmapp.user.application.dto.PasswordPolicyDto;
-import com.hrmapp.user.application.dto.UserRole;
+import com.hrmapp.user.application.dto.*;
 import com.hrmapp.user.application.dto.command.CreatePasswordResetTokenCommand;
 import com.hrmapp.user.application.dto.command.CreateUserCommand;
 import com.hrmapp.user.application.dto.request.*;
@@ -20,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -169,5 +167,33 @@ public class UserApplicationService {
 
     public void handleDeletePasswordPolicy(UUID passwordPolicyId) {
         passwordPolicyCommandHandler.handleDeletePasswordPolicy(passwordPolicyId);
+    }
+
+    public RoleDto handleCreateRoleRequest(CreateRoleRequest createRoleRequest, UUID userId) {
+        return roleCommandHandler.handleCreateRoleRequest(createRoleRequest, userId);
+    }
+
+    public RoleDto findRoleById(UUID roleId) {
+        return roleQueryHandler.findRoleById(roleId);
+    }
+
+    public RoleDto handleAddPermissions(UUID roleId, Set<RolePermission> rolePermissions) {
+        return roleCommandHandler.handleAddPermissions(roleId, rolePermissions);
+    }
+
+    public RoleDto handleRemoveRolePermissions(UUID roleId, Set<RolePermission> rolePermissions) {
+        return roleCommandHandler.handleRemoveRolePermissions(roleId, rolePermissions);
+    }
+
+    public RoleDto handleUpdateRoleRequest(UUID roleId, UpdateRoleRequest updateRoleRequest) {
+        return roleCommandHandler.handleUpdateRoleRequest(roleId, updateRoleRequest);
+    }
+
+    public PagedResult<RoleDto> findAllRoles(PageQuery pageQuery) {
+        return roleQueryHandler.findAllRoles(pageQuery);
+    }
+
+    public void handleDeleteRole(UUID roleId) {
+        roleCommandHandler.handleDeleteRole(roleId);
     }
 }
