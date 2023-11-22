@@ -54,4 +54,20 @@ public class UserDomainService {
         passwordPolicy.updatePolicy(name, passwordResetDays, numberOfCharacters, numberOfSpecialCharacters,
                 numberOfNumericCharacters, numberOfLowercaseCharacters, numberOfUppercaseCharacters);
     }
+
+    public void createRole(Role role) {
+        role.createRole();
+    }
+
+    public void addPermissionsToRole(Role role, Set<Permission> permissions) {
+        role.addPermissions(permissions);
+    }
+
+    public void removeRolePermissions(Role role, Set<Permission> permissions) {
+        role.removePermission(permissions);
+    }
+
+    public void updateRole(Role role, String name, String description) {
+        role.updateRole(name, description);
+    }
 }
