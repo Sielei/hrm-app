@@ -1,6 +1,7 @@
 package com.hrmapp.user.domain.entity;
 
 import com.hrmapp.common.domain.entity.BaseEntity;
+import com.hrmapp.common.domain.valueobject.UserId;
 import com.hrmapp.user.domain.exception.PermissionException;
 import com.hrmapp.user.domain.valueobject.RoleId;
 
@@ -12,7 +13,7 @@ public class Role extends BaseEntity<RoleId> {
     private String name;
     private String description;
     private Set<Permission> permissions;
-    private User createdBy;
+    private UserId createdBy;
 
     private Role(Builder builder) {
         super.setId(builder.id);
@@ -37,7 +38,7 @@ public class Role extends BaseEntity<RoleId> {
         return permissions;
     }
 
-    public User getCreatedBy() {
+    public UserId getCreatedBy() {
         return createdBy;
     }
 
@@ -73,7 +74,7 @@ public class Role extends BaseEntity<RoleId> {
         private String name;
         private String description;
         private Set<Permission> permissions;
-        private User createdBy;
+        private UserId createdBy;
 
         private Builder() {
         }
@@ -98,8 +99,8 @@ public class Role extends BaseEntity<RoleId> {
             return this;
         }
 
-        public Builder createdBy(User val) {
-            createdBy = val;
+        public Builder createdBy(UUID val) {
+            createdBy = new UserId(val);
             return this;
         }
 
