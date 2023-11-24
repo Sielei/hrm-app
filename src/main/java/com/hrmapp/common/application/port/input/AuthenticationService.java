@@ -2,6 +2,7 @@ package com.hrmapp.common.application.port.input;
 
 import com.hrmapp.common.application.dto.GenericResponse;
 import com.hrmapp.common.application.dto.LoginResponse;
+import com.hrmapp.common.application.dto.RefreshToken;
 import com.hrmapp.common.application.dto.request.LoginRequest;
 import com.hrmapp.common.application.dto.request.ResetPasswordRequest;
 import com.hrmapp.common.application.port.input.util.PasswordUtil;
@@ -119,7 +120,9 @@ public class AuthenticationService {
     }
     public void logout(HttpServletRequest request) {
         var session = getSessionByToken(request);
+        System.out.println(session.getActive());
         var terminatedSession = userApplicationService.terminateSession(session.getId().getValue());
+        System.out.println(terminatedSession.getActive());
     }
 
     private Session getSessionByToken(HttpServletRequest request) {
@@ -128,7 +131,7 @@ public class AuthenticationService {
         return userApplicationService.findSessionByToken(token);
     }
 
-    public String getRefreshToken(UUID userId, HttpServletRequest request){
+    public RefreshToken getRefreshToken(UUID userId, HttpServletRequest request){
         var userDto = userApplicationService.findUserById(userId);
         var session = getSessionByToken(request);
         //terminate session
@@ -145,6 +148,8 @@ public class AuthenticationService {
                 .build();
         userApplicationService.createSession(newSession);
         //return new token
-        return jwtToken;
+        return new RefreshToken(jwtToken);
     }
+
+
 }
