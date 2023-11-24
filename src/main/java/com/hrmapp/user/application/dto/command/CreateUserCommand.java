@@ -5,7 +5,8 @@ import com.hrmapp.user.domain.entity.User;
 import java.util.UUID;
 
 public record CreateUserCommand(UUID employeeId, String username, String emailAddress, String password,
-                                UUID passwordPolicyId, UUID createdBy, boolean changePasswordNextLogin) {
+                                String genPassword, UUID passwordPolicyId, UUID createdBy,
+                                boolean changePasswordNextLogin) {
     public static Builder builder() {
         return new Builder();
     }
@@ -28,6 +29,7 @@ public record CreateUserCommand(UUID employeeId, String username, String emailAd
         private String username;
         private String emailAddress;
         private String password;
+        private String genPassword;
         private UUID passwordPolicyId;
         private UUID createdBy;
         private boolean changePasswordNextLogin;
@@ -54,6 +56,10 @@ public record CreateUserCommand(UUID employeeId, String username, String emailAd
             password = val;
             return this;
         }
+        public Builder genPassword(String val) {
+            genPassword = val;
+            return this;
+        }
 
         public Builder passwordPolicyId(UUID val) {
             passwordPolicyId = val;
@@ -71,7 +77,7 @@ public record CreateUserCommand(UUID employeeId, String username, String emailAd
         }
 
         public CreateUserCommand build() {
-            return new CreateUserCommand(employeeId, username, emailAddress, password, passwordPolicyId, createdBy,
+            return new CreateUserCommand(employeeId, username, emailAddress, password, genPassword, passwordPolicyId, createdBy,
                     changePasswordNextLogin);
         }
     }
