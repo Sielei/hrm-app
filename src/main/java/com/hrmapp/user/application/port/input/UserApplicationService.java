@@ -12,7 +12,6 @@ import com.hrmapp.user.application.dto.response.CreateUserResponse;
 import com.hrmapp.user.application.port.input.handler.command.*;
 import com.hrmapp.user.application.port.input.handler.query.*;
 import com.hrmapp.user.domain.entity.Session;
-import com.hrmapp.user.domain.exception.UserDomainException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,15 +33,13 @@ public class UserApplicationService {
     private final PermissionQueryHandler permissionQueryHandler;
     private final SessionCommandHandler sessionCommandHandler;
     private final SessionQueryHandler sessionQueryHandler;
-    private final PasswordUtil passwordUtil;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserEmailHandler userEmailHandler;
 
     public UserApplicationService(UserCommandHandler userCommandHandler, UserQueryHandler userQueryHandler,
                                   PasswordResetCommandHandler passwordResetCommandHandler, PasswordResetQueryHandler passwordResetQueryHandler, RoleCommandHandler roleCommandHandler, RoleQueryHandler roleQueryHandler,
                                   PasswordPolicyCommandHandler passwordPolicyCommandHandler, PasswordPolicyQueryHandler passwordPolicyQueryHandler,
                                   PermissionCommandHandler permissionCommandHandler, PermissionQueryHandler permissionQueryHandler,
-                                  SessionCommandHandler sessionCommandHandler, SessionQueryHandler sessionQueryHandler, PasswordUtil passwordUtil, BCryptPasswordEncoder bCryptPasswordEncoder, UserEmailHandler userEmailHandler) {
+                                  SessionCommandHandler sessionCommandHandler, SessionQueryHandler sessionQueryHandler, UserEmailHandler userEmailHandler) {
         this.userCommandHandler = userCommandHandler;
         this.userQueryHandler = userQueryHandler;
         this.passwordResetCommandHandler = passwordResetCommandHandler;
@@ -55,8 +52,6 @@ public class UserApplicationService {
         this.permissionQueryHandler = permissionQueryHandler;
         this.sessionCommandHandler = sessionCommandHandler;
         this.sessionQueryHandler = sessionQueryHandler;
-        this.passwordUtil = passwordUtil;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userEmailHandler = userEmailHandler;
     }
     public UserDto findUserById(UUID userId) {
@@ -101,17 +96,9 @@ public class UserApplicationService {
         return sessionCommandHandler.terminateSession(session);
     }
 
-
-    public String generateNewUserPassword(UUID passwordPolicyId) {
-        return passwordUtil.generateNewUserPassword(passwordPolicyId);
-    }
-
-    public CreateUserResponse handleCreateUserCommand(CreateUserRequest createUserRequest, UUID createdBy) {
-        var generatedPassword = generateNewUserPassword(createUserRequest.passwordPolicyId());
-        var password = bCryptPasswordEncoder.encode(generatedPassword);
-        var createUserCommand = CreateUserCommand.builder().build();
+    public CreateUserResponse handleCreateUserCommand(CreateUserCommand createUserCommand) {
         var userDto = userCommandHandler.handleCreateUserCommand(createUserCommand);
-        userEmailHandler.sendWelcomeEmail(userDto, generatedPassword);
+        userEmailHandler.sendWelcomeEmail(userDto, createUserCommand.genPassword());
         return CreateUserResponse.fromDto(userDto);
     }
 
@@ -137,20 +124,6 @@ public class UserApplicationService {
 
     public PagedResult<CreateUserResponse> findAllUsers(PageQuery pageQuery) {
         return userQueryHandler.findAllUsers(pageQuery);
-    }
-
-    public void handleUpdatePasswordRequest(UUID userId, UpdatePasswordRequest updatePasswordRequest) {
-        var user = findUserById(userId);
-        if (!bCryptPasswordEncoder.matches(updatePasswordRequest.currentPassword(), user.password())){
-            throw new UserDomainException("Current password does not match with the password you provided!");
-        }
-        passwordUtil.validatePassword(user, updatePasswordRequest.newPassword());
-        var newPassword = bCryptPasswordEncoder.encode(updatePasswordRequest.newPassword());
-        var updatePasswordCommand = UpdatePasswordCommand.builder()
-                .userId(userId)
-                .newPassword(newPassword)
-                .build();
-        handleUpdatePasswordCommand(updatePasswordCommand);
     }
 
     public CreatePasswordPolicyResponse handleCreatePasswordPolicy(CreatePasswordPolicyRequest createPasswordPolicyRequest) {
@@ -195,5 +168,9 @@ public class UserApplicationService {
 
     public void handleDeleteRole(UUID roleId) {
         roleCommandHandler.handleDeleteRole(roleId);
+    }
+
+    public PagedResult<PermissionDto> findAllPermissions(PageQuery pageQuery) {
+        return permissionQueryHandler.findAllPermissions(pageQuery);
     }
 }
