@@ -10,11 +10,11 @@ import com.hrmapp.user.application.dto.request.UpdatePasswordRequest;
 import com.hrmapp.user.application.dto.request.UpdateUserRequest;
 import com.hrmapp.user.application.dto.response.CreateUserResponse;
 import com.hrmapp.user.application.port.input.UserApplicationService;
+import com.hrmapp.user.application.port.input.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -25,16 +25,19 @@ import java.util.UUID;
 @RequestMapping("/api/users")
 public class UserController {
     private final UserApplicationService userApplicationService;
+    private final UserService userService;
 
-    public UserController(UserApplicationService userApplicationService) {
+    public UserController(UserApplicationService userApplicationService, UserService userService) {
         this.userApplicationService = userApplicationService;
+        this.userService = userService;
     }
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('USER_FULL_ACCESS', 'CREATE_USERS')")
     public ResponseEntity<CreateUserResponse> createUser(@RequestAttribute("userId") UUID userId,
                                                          @RequestBody @Valid CreateUserRequest createUserRequest){
-        var createdUser = userApplicationService.handleCreateUserCommand(createUserRequest, userId);
+        var createUserCommand = userService.generateCreateUserCommand(createUserRequest, userId);
+        var createdUser = userApplicationService.handleCreateUserCommand(createUserCommand);
         var location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -77,7 +80,9 @@ public class UserController {
     @PostMapping("/update-password")
     public ResponseEntity<GenericResponse> updatePassword(@RequestAttribute("userId") UUID userId,
                                                           @RequestBody UpdatePasswordRequest updatePasswordRequest){
-        userApplicationService.handleUpdatePasswordRequest(userId, updatePasswordRequest);
+        var userDto = userApplicationService.findUserById(userId);
+        var updatePasswordCommand = userService.generateUpdatePasswordCommand(userDto, updatePasswordRequest);
+        userApplicationService.handleUpdatePasswordCommand(updatePasswordCommand);
         return new ResponseEntity<>(GenericResponse.builder()
                 .success(true)
                 .message("Password updated successfully!")
