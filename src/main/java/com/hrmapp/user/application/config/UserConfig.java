@@ -28,8 +28,8 @@ public class UserConfig {
         return new RoleDbAdapter(roleJpaRepository, userDataMapper);
     }
     @Bean
-    public PermissionRepository permissionRepository(final PermissionJpaRepository permissionJpaRepository){
-        return new PermissionDbAdapter(permissionJpaRepository);
+    public PermissionRepository permissionRepository(final PermissionJpaRepository permissionJpaRepository, final UserDataMapper userDataMapper){
+        return new PermissionDbAdapter(permissionJpaRepository, userDataMapper);
     }
     @Bean
     public PasswordPolicyRepository passwordPolicyRepository(final PasswordPolicyJpaRepository passwordJpaRepository,
