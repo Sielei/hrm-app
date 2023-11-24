@@ -50,7 +50,7 @@ public class UserDataMapper {
                 .collect(Collectors.toSet());
     }
 
-    private Permission mapPermissionJpaEntityToPermission(PermissionEntity permissionEntity) {
+    public Permission mapPermissionJpaEntityToPermission(PermissionEntity permissionEntity) {
         return Permission.builder()
                 .id(permissionEntity.getId())
                 .name(permissionEntity.getName())
