@@ -1,6 +1,7 @@
 package com.hrmapp.common.application.controller;
 
 import com.hrmapp.common.application.dto.GenericResponse;
+import com.hrmapp.common.application.dto.RefreshToken;
 import com.hrmapp.common.application.dto.request.LoginRequest;
 import com.hrmapp.common.application.dto.request.PasswordResetRequest;
 import com.hrmapp.common.application.dto.request.ResetPasswordRequest;
@@ -45,17 +46,15 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<GenericResponse> logout(HttpServletRequest request){
-        //TODO get user token and invalidate it
-        //authenticationService.logout(request);
+        authenticationService.logout(request);
         return new ResponseEntity<>(GenericResponse.builder()
                 .success(true)
                 .message("Successfully logged out!")
                 .build(), HttpStatus.OK);
     }
 
-    @PostMapping("/refreshToken")
-    public ResponseEntity<?> getRefreshToken(@RequestAttribute("userId") UUID userId, HttpServletRequest request){
-        var refreshToken = authenticationService.getRefreshToken(userId, request);
-        return new ResponseEntity<>(refreshToken, HttpStatus.OK);
+    @PostMapping("/refresh-token")
+    public RefreshToken getRefreshToken(@RequestAttribute("userId") UUID userId, HttpServletRequest request){
+        return authenticationService.getRefreshToken(userId, request);
     }
 }
